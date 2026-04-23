@@ -14,7 +14,7 @@ spec:
   spec:
    containers:
    - name: webapp
-     image: webapp:32
+     image: webapp:latest
      imagePullPolicy: IfNotPresent
      ports:
      - containerPort: 5000
