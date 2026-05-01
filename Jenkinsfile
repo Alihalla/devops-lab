@@ -15,7 +15,12 @@ pipeline {
             }
         }
 
-        stage('Run Container') {
+        stage('Stop Old Container') {
+    	    steps {
+		bat 'docker rm -f webapp || exit 0'
+    	    }
+	}	
+	stage('Run Container') {
             steps {
                 bat 'docker run -d -p 5000:5000 webapp:latest'
             }
