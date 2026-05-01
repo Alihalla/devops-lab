@@ -3,9 +3,9 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
+        stage('Clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/Alihalla/devops-lab.git'
+                git 'https://github.com/Alihalla/devops-lab.git'
             }
         }
 
@@ -16,23 +16,15 @@ pipeline {
         }
 
         stage('Stop Old Container') {
-    	    steps {
-		bat 'docker run -d --rm -p 5000:5000 webapp:latest'
-    	    }
-	}	
-	stage('Run Container') {
             steps {
-                bat 'docker run -d -p 5000:5000 webapp:latest'
+                bat 'docker rm -f webapp || exit 0'
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Pipeline exécuté avec succès'
-        }
-        failure {
-            echo 'Pipeline échoué'
+        stage('Run New Container') {
+            steps {
+                bat 'docker run -d -p 5000:5000 --name webapp webapp:latest'
+            }
         }
     }
 }
