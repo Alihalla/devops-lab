@@ -17,7 +17,7 @@ pipeline {
 
         stage('Stop Old Container') {
     	    steps {
-		bat 'docker rm -f webapp || exit 0'
+		bat 'docker run -d --rm -p 5000:5000 webapp:latest'
     	    }
 	}	
 	stage('Run Container') {
