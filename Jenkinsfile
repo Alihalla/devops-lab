@@ -16,11 +16,11 @@ pipeline {
         }
 
         stage('Deploy Kubernetes') {
-            steps {
-                bat 'kubectl apply -f deployment.yaml'
-                bat 'kubectl apply -f service.yaml'
-            }
-        }
+    	    steps {
+        	bat 'set KUBECONFIG=C:\\Users\\lenovo\\.kube\\config && kubectl apply -f deployment.yaml'
+        	bat 'set KUBECONFIG=C:\\Users\\lenovo\\.kube\\config && kubectl apply -f service.yaml'
+    	    }
+	}
 
     }
 }
