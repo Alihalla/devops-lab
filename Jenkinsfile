@@ -1,40 +1,20 @@
 pipeline {
     agent any
-
     stages {
-
-        stage('Checkout Code') {
+        stage('Clone') {
             steps {
                 git 'https://github.com/Alihalla/devops-lab.git'
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Build Docker') {
             steps {
-                bat 'docker build --pull=false -t webapp:latest .'
+                bat 'docker build -t webapp:%BUILD_NUMBER% .'
             }
         }
-
-        stage('Stop Old Container') {
+        stage('Deploy Kubernetes') {
             steps {
-                bat 'docker rm -f webapp || exit 0'
+                bat 'kubectl set image deployment/webapp webapp=webapp:%BUILD_NUMBER%'
             }
-        }
-
-        stage('Run New Container') {
-            steps {
-                bat 'docker run -d -p 5000:5000 --name webapp webapp:latest'
-            }
-        }
-
-    }
-
-    post {
-        success {
-            echo 'Deployment successful! App is running on http://localhost:5000'
-        }
-        failure {
-            echo 'Build failed, check logs'
         }
     }
 }
