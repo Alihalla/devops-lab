@@ -22,7 +22,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                bat 'docker run -d -p 5000:5000 --name webapp webapp:latest'
+                bat 'docker run -d -p 5000:5000 --name webapp:latest'
             }
         }
     }
