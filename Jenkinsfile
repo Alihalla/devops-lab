@@ -1,20 +1,26 @@
 pipeline {
     agent any
+
     stages {
+
         stage('Clone') {
             steps {
-                git 'https://github.com/Alihalla/devops-lab.git'
+                git 'https://github.com/USER/devops-lab.git'
             }
         }
+
         stage('Build Docker') {
             steps {
-                bat 'docker build -t webapp:%BUILD_NUMBER% .'
+                bat 'docker build -t webapp:latest .'
             }
         }
+
         stage('Deploy Kubernetes') {
             steps {
-                bat 'kubectl set image deployment/webapp webapp=webapp:%BUILD_NUMBER%'
+                bat 'kubectl apply -f deployment.yaml'
+                bat 'kubectl apply -f service.yaml'
             }
         }
+
     }
 }
