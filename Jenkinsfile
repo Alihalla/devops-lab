@@ -21,19 +21,21 @@ pipeline {
 
         stage('Build Docker') {
             steps {
-                bat 'docker build -t webapp:latest .'
+                script {
+                    def tag = "v${BUILD_NUMBER}"
+                    env.IMAGE_TAG = tag
+                    bat "docker build -t webapp:${tag} ."
+                }
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Update Deployment File') {
             steps {
-                bat 'docker rm -f webapp-container || exit 0'
-            }
-        }
-
-        stage('Run Container') {
-            steps {
-                bat 'docker run -d -p 5000:5000 --name webapp-container webapp:latest'
+                script {
+                    bat """
+                    powershell -Command "(Get-Content deployment.yaml) -replace 'webapp:.*', 'webapp:${IMAGE_TAG}' | Set-Content deployment.yaml"
+                    """
+                }
             }
         }
 
@@ -41,8 +43,14 @@ pipeline {
             steps {
                 bat 'kubectl apply -f deployment.yaml'
                 bat 'kubectl apply -f service.yaml'
-                bat 'kubectl rollout restart deployment webapp'
             }
         }
+
+        stage('Verify') {
+            steps {
+                bat 'kubectl get pods'
+            }
+        }
+
     }
 }
