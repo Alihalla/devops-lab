@@ -5,9 +5,9 @@ pipeline {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/Alihalla/devops-lab.git'
-            }
-        }
+        	git branch: 'main', url: 'https://github.com/Alihalla/devops-lab.git'
+    	    }
+	}
 
         stage('Build Docker') {
             steps {
