@@ -29,6 +29,18 @@ pipeline {
             }
         }
 
+        stage('Stop Old Container') {
+            steps {
+                bat 'docker rm -f webapp-container || exit 0'
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                bat "docker run -d -p 5000:5000 --name webapp-container webapp:${IMAGE_TAG}"
+            }
+        }
+
         stage('Update Deployment File') {
             steps {
                 script {
@@ -43,12 +55,6 @@ pipeline {
             steps {
                 bat 'kubectl apply -f deployment.yaml'
                 bat 'kubectl apply -f service.yaml'
-            }
-        }
-
-        stage('Verify') {
-            steps {
-                bat 'kubectl get pods'
             }
         }
 
