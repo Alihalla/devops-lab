@@ -8,18 +8,17 @@ pipeline {
                 git 'https://github.com/Alihalla/devops-lab.git'
             }
         }
-
+	stage('Stop Old Container') {
+    	    steps {
+        	bat 'docker stop webapp || exit 0'
+        	bat 'docker rm webapp || exit 0'
+    	    }
+	}
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t webapp:latest .'
             }
-        }
-
-        stage('Stop Old Container') {
-            steps {
-                bat 'docker rm -f webapp || exit 0'
-            }
-        }
+     	}
 
         stage('Run New Container') {
             steps {
